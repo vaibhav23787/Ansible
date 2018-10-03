@@ -1,0 +1,54 @@
+## Demo Playbook for Setting up First EC2 Instance
+# 1) Creates a custom security group
+# 2) Spins up new EC2 Instances
+# 3) Waits for ssh to become active on Instance
+#
+# Version 1.0    Yogesh Mehta  11/06/2016
+#
+- hosts: localhost
+
+  tasks:
+
+    - name: Setting up Security/Firewall Group
+      ec2_group:
+         name: Ansible_AWS_Security_Grp
+         description: Rules Allowing Traffic on port 22 and 80
+         region: ap-south-1
+         rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0
+         rules_egress:
+          - proto: all
+            cidr_ip: 0.0.0.0/0
+
+    - name: Provision a EC2 Instance
+      ec2:
+         key_name: AWSMUMBAI
+         region: ap-south-1
+         instance_type: t2.micro
+         image: ami-5b673c34
+         wait: yes
+         wait_timeout: 500
+         count: 1
+         instance_tags:
+           Name: awslabserver
+           Owner: Yogesh
+         volumes:
+          - device_name: /dev/xvda
+            volume_type: gp2
+            volume_size: 6
+         monitoring: no
+         vpc_subnet_id: subnet-533b7b3b
+         assign_public_ip: yes
+         group: Ansible_AWS_Security_Grp
+      register: ec2_out
+
+    - name: Wait for SSH to come up
+      wait_for: host={{ item.public_dns_name }} port=22 delay=60 timeout=320 state=started
+      with_items: '{{ec2_out.instances}}'
