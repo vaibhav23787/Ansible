@@ -3,7 +3,7 @@
 # 2) Spins up new EC2 Instances
 # 3) Waits for ssh to become active on Instance
 #
-# Version 1.0    Yogesh Mehta  11/06/2016
+# Version 1.0    Kumar Vaibhav  11/06/2016
 #
 - hosts: localhost
 
