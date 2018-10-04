@@ -38,7 +38,7 @@
          count: 1
          instance_tags:
            Name: awslabserver
-           Owner: Yogesh
+           Owner: Vaibhav
          volumes:
           - device_name: /dev/xvda
             volume_type: gp2
