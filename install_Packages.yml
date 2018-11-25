@@ -1,6 +1,8 @@
- - name: install Visual software
-    yum: pkg={{item}} state=installed
-    with_items:
-     - httpd
-     - vsftpd
-     
+--- 
+- 
+  action: "{{ ansible_pkg_mgr }} name={{ item }} state=present update_cache=yes\n"
+  name: "install basic packages"
+  with_items: 
+    - httpd
+    - vsftpd
+    
